@@ -51,7 +51,7 @@ public class AppTest {
     public void answerPost() throws IOException {
        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         //测试得出回答的接口几乎一样，只有Post请求和topicid这部分需要修改
-        HttpPost post=new HttpPost("https://api.zsxq.com/v2/topics/82255512554212442/answer");
+        HttpPost post=new HttpPost("https://api.zsxq.com/v2/topics/82255512588514112/answer");
         post.addHeader("cookie","_c_WBKFRo=UQHP1NtYupQJTc3ZRcogvGqAOXpalR4m0FfN9Pxd; _nb_ioWEgULi=; abtest_env=product; sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22412814142252188%22%2C%22first_id%22%3A%2219d66155fabe35-030c4a727ae878c-4c657b58-1622400-19d66155fac13e2%22%2C%22props%22%3A%7B%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTlkNjYxNTVmYWJlMzUtMDMwYzRhNzI3YWU4NzhjLTRjNjU3YjU4LTE2MjI0MDAtMTlkNjYxNTVmYWMxM2UyIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiNDEyODE0MTQyMjUyMTg4In0%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22412814142252188%22%7D%2C%22%24device_id%22%3A%2219d66155fabe35-030c4a727ae878c-4c657b58-1622400-19d66155fac13e2%22%7D; zsxq_access_token=A7CC55D0-0A60-429A-ABBB-3A1A37F4D535_9598769BB52690B2");
         post.addHeader("Content-Type","application/json;charset=UTF-8");
 
