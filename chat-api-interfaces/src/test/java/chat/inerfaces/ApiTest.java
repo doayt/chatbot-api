@@ -51,6 +51,11 @@ public class ApiTest {
         }
 
         List<Topics> topics=unansweredQuestionAggregates.getResp_data().getTopics();
+        if (topics==null||topics.isEmpty()) {
+            log.info("请求的服务失败,未能获取话题信息");
+            return;
+        }
+
         for(Topics topic:topics){
             String topicId = topic.getTopic_id();
             String txt=topic.getQuestion().getText();
