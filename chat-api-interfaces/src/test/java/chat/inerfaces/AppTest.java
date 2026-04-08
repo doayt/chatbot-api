@@ -1,7 +1,10 @@
 package chat.inerfaces;
 
+import chat.domain.ai.IOpenAI;
+import chat.interfaces.ApiApplication;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -14,15 +17,24 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
  * Unit test for simple App.
  */
+@Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ApiApplication.class)
 public class AppTest {
 
-
+    @Autowired
+    private IOpenAI openAI;
 
    @Test
     public void questionGet() throws IOException {
@@ -73,6 +85,53 @@ public class AppTest {
             //如果不是200，则打印响应状态码
             System.out.println(response.getStatusLine().getStatusCode());
         }
+
+    }
+
+
+
+    @Test
+    public void answerGPT() throws IOException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost post=new HttpPost("https://api.chatanywhere.tech/v1/chat/completions");
+
+        post.addHeader("Authorization","sk-HhBFsH7slbqYiA1cwJQznsnifaggoBWxxOHO7coreZpILcHf");
+        post.addHeader("Content-Type","application/json; charset=UTF-8");
+
+        String paramJson="{\n" +
+                "    \"model\": \"gpt-3.5-turbo\",\n" +
+                "    \"messages\": [\n" +
+                "      {\n" +
+                "        \"role\": \"system\",\n" +
+                "        \"content\": \"You are a helpful assistant.\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"role\": \"user\",\n" +
+                "        \"content\": \"Hello!\"\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  }";
+
+        StringEntity entity = new StringEntity(paramJson, ContentType.create("application/json", "UTF-8"));
+        post.setEntity(entity);
+
+        CloseableHttpResponse response = httpClient.execute(post);
+
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String res = EntityUtils.toString(response.getEntity());
+            System.out.println(res);
+        }else{
+
+            System.out.println(response.getStatusLine().getStatusCode());
+        }
+
+    }
+
+    @Test
+    public void answerGPT2() throws IOException {
+
+
+
 
     }
 

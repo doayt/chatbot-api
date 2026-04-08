@@ -1,11 +1,13 @@
 package chat.inerfaces;
 
 
+import chat.domain.ai.IOpenAI;
 import chat.domain.zsxq.IZsxqApi;
 import chat.domain.zsxq.model.aggregates.UnansweredQuestionAggregates;
 import chat.domain.zsxq.model.vo.Topics;
 import chat.interfaces.ApiApplication;
 import chat.interfaces.config.ApiProperties;
+import chat.interfaces.config.GPTProperties;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,6 +26,12 @@ import java.util.List;
 public class ApiTest {
 
     @Resource
+    private GPTProperties gptProperties;
+
+    @Resource
+    private IOpenAI openAI;
+
+    @Resource
     private ApiProperties apiProperties;
 
     @Resource
@@ -37,13 +45,19 @@ public class ApiTest {
 
         UnansweredQuestionAggregates unansweredQuestionAggregates = zsxqApi.queryUnansweredQuestionTopicId(groupId, cookie);
         log.info("测试结果：{}", JSON.toJSONString(unansweredQuestionAggregates));
+        if (unansweredQuestionAggregates == null) {
+            log.info("请求的服务失败...");
+            return;
+        }
 
         List<Topics> topics=unansweredQuestionAggregates.getResp_data().getTopics();
         for(Topics topic:topics){
             String topicId = topic.getTopic_id();
-            String text=topic.getQuestion().getText();
-            log.info("topicId:{},text:{}",topicId,text);
+            String txt=topic.getQuestion().getText();
+            log.info("topicId:{},text:{}",topicId,txt);
 
+            String text = openAI.doChatGPT(txt, gptProperties.getUri(), gptProperties.getApiKey(), gptProperties.getModel());
+            log.info("回答的结果:{}",text);
             zsxqApi.answer(groupId,cookie,topicId,text,false);
         }
 
